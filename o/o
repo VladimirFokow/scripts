@@ -1,0 +1,18 @@
+#!/bin/zsh
+
+# This is the "open" command that works with no arguments (opens the current directory),
+# and is faster to type.
+
+if [ $# -eq 0 ]
+  # If there are no arguments, open current directory
+  # $# is the number of supplied arguments
+  then
+    open .
+
+  else
+  # Otherwise use the usual "open" command with all the supplied arguments
+    open "$@"
+fi
+
+
+

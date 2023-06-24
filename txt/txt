@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+
+open -a /System/Applications/TextEdit.app $1
+

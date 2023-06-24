@@ -1,0 +1,34 @@
+#!/bin/bash
+
+git fetch --all > /dev/null 2>&1
+
+colorize() {
+    case $1 in
+        red) echo -e "\033[0;31m$2\033[0m" ;;
+        green) echo -e "\033[0;32m$2\033[0m" ;;
+        yellow) echo -e "\033[38;5;226m$2\033[0m" ;;
+        *) echo "$2" ;;
+    esac
+}
+
+if [ -d .git ] || git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    for remote in $(git branch -r | grep -v '\->' | tr -d ' '); do
+        branch="${remote#origin/}"
+        if git show-ref --verify --quiet refs/heads/$branch; then
+            UPSTREAM=$(git rev-parse $branch)
+            REMOTE=$(git rev-parse $remote)
+            if [ "$UPSTREAM" != "$REMOTE" ]; then
+                colorize red "🔻 $branch \t- behind $remote"
+            else
+                colorize green "✅ $branch \t- up to date with $remote"
+            fi
+        else
+            colorize yellow "🔸 $branch \t- isn't checked out locally"
+        fi
+    done
+else
+    colorize red "This script must be run from within a git repository."
+fi
+
+# Print an empty line
+echo
